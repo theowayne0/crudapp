@@ -86,3 +86,25 @@ exports.update = (req, res) => {
        });
    });
 };
+
+// Delete the Product with the productID
+exports.delete = (req, res) => {
+   Product.findByIdAndRemove(req.params.productID)
+       .then(oProduct => {
+           if(oProduct) {
+               res.send({message: "Product has been deleted successfully!"});
+           }
+           return res.status(404).send({
+               message: "Product not exist with productID" + req.params.productID
+           });
+       }).catch(err => {
+       if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+           return res.status(404).send({
+               message: "Product not exist with productID" + req.params.productID
+           });
+       }
+       return res.status(500).send({
+           message: "Some error occurred while deleting the Product with productID" + req.params.productID
+       });
+   });
+};
